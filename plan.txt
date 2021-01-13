@@ -13,6 +13,14 @@ This page will just say hidden if logged out, shown if logged in
 After I get this work I will resume my brainstorming here
 1018pm
 
+toggle is isMember
+
+add dummy posts and render to the index
+with author, hero, & identity
+if logged out only show superhero name and no author
+
+if logged in and member can see hero, secret identity, and author
+admin can delete
 
 
 
