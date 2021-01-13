@@ -1,5 +1,4 @@
 /////// app.js
-
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
@@ -15,15 +14,13 @@ mongoose.connect(mongoDb, { useUnifiedTopology: true, useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'mongo connection error'));
 
+//TODO use my model file
 const User = mongoose.model(
   'User',
   new Schema({
     username: {
       type: String,
-      required: true,
-      minlength: 3,
-      maxlength: 30,
-      unique: true
+      required: true
     },
     password: { type: String, required: true },
     isAdmin: { type: Boolean, default: false },
@@ -78,10 +75,14 @@ app.use(function (req, res, next) {
 });
 
 app.get('/', (req, res) => {
+  // https://stackoverflow.com/questions/34796878/how-to-pass-data-between-routes-in-express
+  app.set('data', req.user);
   res.render('index', { user: req.user });
 });
 
+//TODO move views into view folder
 app.get('/log-out', (req, res) => {
+  //TODO clear app.set data
   req.logout();
   res.redirect('/');
 });
@@ -93,6 +94,28 @@ app.get('/sign-up', (req, res) => res.render('sign-up'));
 async function generatePassword() {
   return await bcrypt.genSalt(10);
 }
+// https://stackoverflow.com/questions/41149686/update-boolean-with-mongoose
+app.get('/change-is-admin/:id', async (req, res, next) => {
+  var user_id = req.params.id;
+  console.log(user_id);
+  await User.findById(user_id, function (err, user) {
+    user.isAdmin = !user.isAdmin;
+    user.save(function (err) {
+      if (err) console.log(err);
+    });
+  });
+
+  //   console.log(user);
+  //   let { isAdmin } = user;
+  //   isAdmin = !isAdmin;
+  //   user.update(
+  //     { _id: user_id },
+  //     {
+  //       isAdmin: isAdmin
+  //     }
+  //   );
+  res.redirect('/');
+});
 
 app.post('/sign-up', async (req, res, next) => {
   // https://stackoverflow.com/questions/50791437/proper-usage-of-promise-await-and-async-function
