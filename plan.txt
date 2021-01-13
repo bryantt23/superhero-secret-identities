@@ -1,0 +1,19 @@
+I created rudimentary models
+Not sure how I am going to use the models
+I think a user will create a post which is made up of a secret and user
+
+First I am just going to get the user to 
+register
+log in
+log out
+
+I will check if they can see a message only if they are logged in
+This page will just say hidden if logged out, shown if logged in
+
+After I get this work I will resume my brainstorming here
+1018pm
+
+
+
+
+
