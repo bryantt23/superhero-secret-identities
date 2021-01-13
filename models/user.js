@@ -7,7 +7,7 @@ var UserInstanceSchema = new Schema({
     type: String,
     required: true,
     minlength: 3,
-    maxlength: 10,
+    maxlength: 30,
     unique: true
   },
   password: { type: String, required: true },

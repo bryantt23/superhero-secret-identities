@@ -9,11 +9,13 @@ const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
+const bcrypt = require('bcryptjs');
 // var usersRouter = require('./routes/users');
+const User = require('./models/user');
 
 //Set up mongoose connection
 var mongoose = require('mongoose');
-var mongoDB = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.qx7so.mongodb.net/movie_library?retryWrites=true&w=majority`;
+var mongoDB = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.qx7so.mongodb.net/secret_identities?retryWrites=true&w=majority`;
 
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 var db = mongoose.connection;
@@ -26,8 +28,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // app.use(logger('dev'));
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 // app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, 'public')));
 
@@ -35,7 +37,51 @@ app.get('/', function (req, res) {
   res.render('index', { title: 'Hey', message: 'Hello there!' });
 });
 
+//TODO move to own file for user actions
 app.get('/sign-up', (req, res) => res.render('sign-up'));
+
+//TODO move to own file for user actions
+async function generatePassword() {
+  return await bcrypt.genSalt(10);
+}
+
+//TODO move to own file for user actions
+app.post('/sign-up', async (req, res, next) => {
+  // https://stackoverflow.com/questions/50791437/proper-usage-of-promise-await-and-async-function
+  // generate a salt
+  const salt = await generatePassword();
+
+  // hash the password along with our new salt
+  const txtPassword = await bcrypt.hash(req.body.password, salt);
+  let newUser = new User({
+    name: req.body.name,
+    password: txtPassword
+  });
+  await newUser
+    .save(err => {
+      if (err) {
+        console.log(err);
+        return next(err);
+      }
+      console.log('New user has been added successfully ' + newUser);
+      res.redirect('/');
+    })
+    .catch(err => {
+      console.log(err);
+      res.redirect('/');
+
+      // handle error
+    });
+});
+
+//TODO move to own file for user actions
+app.post(
+  '/log-in',
+  passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/'
+  })
+);
 
 // app.get('/', (req, res) => res.render('index'));
 

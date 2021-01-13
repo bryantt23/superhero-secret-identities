@@ -2,13 +2,13 @@ html
     body
         h1 Sign Up
 
-    form(action=`/catalog/movie/create`, method='POST')
+    form(action=`/sign-up`, method='POST')
         p
-            | Username: 
-            input(type='text' name='username' value='')
+            | Name: 
+            input(type='text' name='name' value='')
             br
             | Password: 
-            input(type='text' name='password' value='')
+            input(type='password' name='password' value='')
 
         input(type='submit' value='Register')
 
