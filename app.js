@@ -31,15 +31,11 @@ app.set('view engine', 'pug');
 // app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, 'public')));
 
-// app.get('/', (req, res) => {
-//   res.render('homepage');
-// });
-// app.get('/', function (req, res) {
-//   res.render('index');
-// });
 app.get('/', function (req, res) {
   res.render('index', { title: 'Hey', message: 'Hello there!' });
 });
+
+app.get('/sign-up', (req, res) => res.render('sign-up'));
 
 // app.get('/', (req, res) => res.render('index'));
 

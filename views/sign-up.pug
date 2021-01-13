@@ -1,0 +1,18 @@
+html
+    body
+        h1 Sign Up
+
+    form(action=`/catalog/movie/create`, method='POST')
+        p
+            | Username: 
+            input(type='text' name='username' value='')
+            br
+            | Password: 
+            input(type='text' name='password' value='')
+
+        input(type='submit' value='Register')
+
+    if errors
+        ul
+            for error in errors
+                li!= error.msg
