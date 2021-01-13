@@ -4,7 +4,9 @@ html
 
 
 if user
+  h1 Welcome back #{user.username}
   p #{user.name} #{user}
+  a(href='/log-out') LOG OUT
   //- ul
   //-   for error in errors
   //-     li!= error.msg
