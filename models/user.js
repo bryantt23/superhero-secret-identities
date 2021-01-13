@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var UserInstanceSchema = new Schema({
-  name: {
+  username: {
     type: String,
     required: true,
     minlength: 3,

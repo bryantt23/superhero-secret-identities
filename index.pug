@@ -1,0 +1,52 @@
+html
+  body
+    h1 hiiiii
+
+
+if user
+  p #{user.name} #{user}
+  //- ul
+  //-   for error in errors
+  //-     li!= error.msg
+
+
+  //- <% if (user) {%>
+  //- <h1>WELCOME BACK <%= user.username %></h1>
+  //- <a href="/log-out">LOG OUT</a>
+  //- <% } else { %>
+else 
+  p no user logged in
+  h1 please log in   
+
+  form(action=`/log-in`, method='POST')
+    p
+      | Name: 
+      input(type='text' name='username' value='')
+      br
+      | Password: 
+      input(type='password' name='password' value='')
+
+    input(type='submit' value='Log In')
+
+//- <!DOCTYPE html>
+//- <html lang="en">
+//-   <head>
+//-     <meta charset="UTF-8" />
+//-     <title></title>
+//-   </head>
+//-   <body>
+//-     <% if (user) {%>
+//-     <h1>WELCOME BACK <%= user.username %></h1>
+//-     <a href="/log-out">LOG OUT</a>
+//-     <% } else { %>
+//-     <h1>please log in</h1>
+//-     <form action="/log-in" method="POST">
+//-       <label for="username">Username</label>
+//-       <input name="username" placeholder="username" type="text" />
+//-       <label for="password">Password</label>
+//-       <input name="password" type="password" />
+//-       <button>Log In</button>
+//-     </form>
+//-     <%}%>
+//-   </body>
+//- </html>

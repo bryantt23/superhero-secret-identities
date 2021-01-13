@@ -1,51 +1,99 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-// var cookieParser = require('cookie-parser');
-// var logger = require('morgan');
-require('dotenv').config();
-// https://www.theodinproject.com/courses/nodejs/lessons/authentication-basics
+/////// app.js
+
+const express = require('express');
+const path = require('path');
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 const bcrypt = require('bcryptjs');
-// var usersRouter = require('./routes/users');
-const User = require('./models/user');
 
-//Set up mongoose connection
-var mongoose = require('mongoose');
-var mongoDB = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.qx7so.mongodb.net/secret_identities?retryWrites=true&w=majority`;
+const mongoDb =
+  'mongodb+srv://bry123:bry123@cluster0.qx7so.mongodb.net/secret_identities?retryWrites=true&w=majority';
+mongoose.connect(mongoDb, { useUnifiedTopology: true, useNewUrlParser: true });
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'mongo connection error'));
 
-mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+const User = mongoose.model(
+  'User',
+  new Schema({
+    username: {
+      type: String,
+      required: true,
+      minlength: 3,
+      maxlength: 30,
+      unique: true
+    },
+    password: { type: String, required: true },
+    isAdmin: { type: Boolean, default: false },
+    isMember: { type: Boolean, default: false }
+  })
+);
 
-var app = express();
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
+const app = express();
+app.set('views', __dirname);
 app.set('view engine', 'pug');
 
-// app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-// app.use(cookieParser());
-// app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
 
-app.get('/', function (req, res) {
-  res.render('index', { title: 'Hey', message: 'Hello there!' });
+passport.use(
+  new LocalStrategy((username, password, done) => {
+    User.findOne({ username: username }, (err, user) => {
+      if (err) {
+        return done(err);
+      }
+      if (!user) {
+        return done(null, false, { msg: 'Incorrect username' });
+      }
+      bcrypt.compare(password, user.password, (err, res) => {
+        if (res) {
+          // passwords match! log user in
+          return done(null, user);
+        } else {
+          // passwords do not match!
+          return done(null, false, { msg: 'Incorrect password' });
+        }
+      });
+    });
+  })
+);
+
+passport.serializeUser(function (user, done) {
+  done(null, user.id);
 });
 
-//TODO move to own file for user actions
+passport.deserializeUser(function (id, done) {
+  User.findById(id, function (err, user) {
+    done(err, user);
+  });
+});
+
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.urlencoded({ extended: false }));
+app.use(function (req, res, next) {
+  res.locals.currentUser = req.user;
+  next();
+});
+
+app.get('/', (req, res) => {
+  res.render('index', { user: req.user });
+});
+
+app.get('/log-out', (req, res) => {
+  req.logout();
+  res.redirect('/');
+});
+
+app.listen(3000, () => console.log('app listening on port 3000!'));
+
 app.get('/sign-up', (req, res) => res.render('sign-up'));
 
-//TODO move to own file for user actions
 async function generatePassword() {
   return await bcrypt.genSalt(10);
 }
 
-//TODO move to own file for user actions
 app.post('/sign-up', async (req, res, next) => {
   // https://stackoverflow.com/questions/50791437/proper-usage-of-promise-await-and-async-function
   // generate a salt
@@ -54,27 +102,22 @@ app.post('/sign-up', async (req, res, next) => {
   // hash the password along with our new salt
   const txtPassword = await bcrypt.hash(req.body.password, salt);
   let newUser = new User({
-    name: req.body.name,
+    username: req.body.username,
     password: txtPassword
   });
   await newUser
     .save(err => {
       if (err) {
-        console.log(err);
         return next(err);
       }
-      console.log('New user has been added successfully ' + newUser);
+      console.log('New user has been added successfully with Id');
       res.redirect('/');
     })
     .catch(err => {
-      console.log(err);
-      res.redirect('/');
-
       // handle error
     });
 });
 
-//TODO move to own file for user actions
 app.post(
   '/log-in',
   passport.authenticate('local', {
@@ -82,34 +125,3 @@ app.post(
     failureRedirect: '/'
   })
 );
-
-// app.get('/', (req, res) => res.render('index'));
-
-/*
-all routes
-sign in
-sign up
-see all secrets
-add secret
-
-*/
-
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
-});
-
-// error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-
-app.listen(3000, () => console.log('app listening on port 3000!'));
-
-module.exports = app;
