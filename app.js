@@ -14,19 +14,21 @@ mongoose.connect(mongoDb, { useUnifiedTopology: true, useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'mongo connection error'));
 
+const User = require('./models/user');
+
 //TODO use my model file
-const User = mongoose.model(
-  'User',
-  new Schema({
-    username: {
-      type: String,
-      required: true
-    },
-    password: { type: String, required: true },
-    isAdmin: { type: Boolean, default: false },
-    isMember: { type: Boolean, default: false }
-  })
-);
+// const User = mongoose.model(
+//   'User',
+//   new Schema({
+//     username: {
+//       type: String,
+//       required: true
+//     },
+//     password: { type: String, required: true },
+//     isAdmin: { type: Boolean, default: false },
+//     isMember: { type: Boolean, default: false }
+//   })
+// );
 
 const app = express();
 app.set('views', __dirname);
@@ -76,7 +78,7 @@ app.use(function (req, res, next) {
 
 app.get('/', (req, res) => {
   // https://stackoverflow.com/questions/34796878/how-to-pass-data-between-routes-in-express
-  app.set('data', req.user);
+  // app.set('data', req.user);
   res.render('index', { user: req.user });
 });
 
