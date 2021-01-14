@@ -163,13 +163,38 @@ app.post('/add-secret/:id', async (req, res, next) => {
   var user_id = req.params.id;
   var user_id = req.params.id;
   console.log(user_id);
-
+  // https://stackoverflow.com/questions/5228210/how-to-remove-an-element-from-a-doubly-nested-array-in-a-mongodb-document
   await User.findById(user_id, function (err, user) {
     user.secrets.push(req.body);
     user.save(function (err) {
       if (err) console.log(err);
     });
   });
+  res.redirect('/');
+});
+
+// POST request to delete secret.
+app.get('/delete-secret/:id/:user_id', async (req, res, next) => {
+  var secret_id = req.params.id;
+  var user_id = req.params.user_id;
+
+  // var deleted = await User.findAndDelete({ id: secret_id });
+
+  await User.update(
+    { _id: user_id },
+    { $pull: { secrets: { _id: secret_id } } },
+    function (err) {
+      if (err) console.log(err);
+    }
+  );
+  console.log(`secret
+  
+  
+  
+  
+  
+  ${secret_id}`);
+
   res.redirect('/');
 });
 
