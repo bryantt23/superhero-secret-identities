@@ -1,18 +1,28 @@
 html
   body
 
-  h3 #{data}
+  h1 Superhero Secrets
+  //- p #{data}
+  //- p #{user}
 
   ul
     //- - book_list.sort(function(a, b) {let textA = a.title.toUpperCase(); let textB = b.title.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
-    each user in data
+    each userData in data
       li
-        p #{user}
-        p #{user.secrets}
+        //- p #{user.}
+        if user 
+          p Posted by: #{userData.username}
+        else
+          p Log in to see who posted
+        //- p #{userData.secrets}
         ul
-          each secret in user.secrets
+          each secret in userData.secrets
             li 
-              p #{secret}
+              p Superhero: #{secret.superheroName}              
+              if user && user.isMember
+                p Secret Identity: #{secret.secretIdentity}
+              else
+                p You must log in and become a member to know this secret identity
         //- p #{user.secret}
         //- p #{user.secret}
         //- a(href=post.url) #{post.title}
@@ -26,6 +36,7 @@ if user
   h1 Welcome back #{user.username}
   p #{user.name} #{user}
 
+  a(href='/change-is-member/'+user._id) Change IsMember
   a(href='/change-is-admin/'+user._id) Change IsAdmin
   a(href='/log-out') LOG OUT
 else 

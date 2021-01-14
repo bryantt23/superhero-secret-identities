@@ -19,7 +19,7 @@ var UserInstanceSchema = new Schema({
         type: String,
         required: true,
         minlength: 3,
-        maxlength: 10
+        maxlength: 20
       },
       secretIdentity: { type: String, required: true }
     }

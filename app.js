@@ -7,9 +7,8 @@ const LocalStrategy = require('passport-local').Strategy;
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcryptjs');
-
-const mongoDb =
-  'mongodb+srv://bry123:bry123@cluster0.qx7so.mongodb.net/secret_identities?retryWrites=true&w=majority';
+require('dotenv').config();
+const mongoDb = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.qx7so.mongodb.net/secret_identities?retryWrites=true&w=majority`;
 mongoose.connect(mongoDb, { useUnifiedTopology: true, useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'mongo connection error'));
@@ -115,16 +114,18 @@ app.get('/change-is-admin/:id', async (req, res, next) => {
       if (err) console.log(err);
     });
   });
+  res.redirect('/');
+});
 
-  //   console.log(user);
-  //   let { isAdmin } = user;
-  //   isAdmin = !isAdmin;
-  //   user.update(
-  //     { _id: user_id },
-  //     {
-  //       isAdmin: isAdmin
-  //     }
-  //   );
+app.get('/change-is-member/:id', async (req, res, next) => {
+  var user_id = req.params.id;
+  console.log(user_id);
+  await User.findById(user_id, function (err, user) {
+    user.isMember = !user.isMember;
+    user.save(function (err) {
+      if (err) console.log(err);
+    });
+  });
   res.redirect('/');
 });
 
