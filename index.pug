@@ -37,7 +37,9 @@ if user
   p #{user.name} #{user}
 
   a(href='/change-is-member/'+user._id) Change IsMember
+  br
   a(href='/change-is-admin/'+user._id) Change IsAdmin
+  br
   a(href='/log-out') LOG OUT
 else 
   h1 please log in   

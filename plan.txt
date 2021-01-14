@@ -22,6 +22,22 @@ if logged out only show superhero name and no author
 if logged in and member can see hero, secret identity, and author
 admin can delete
 
+1/14/21
+133am
+
+create add secret form
+have that add to the array
+
+after i get this working for both users then 
+find out how to have each message have an id
+
+after that create the delete button for each message
+get the delete button to work by using the id
+after this functionality will be complete
+
+clean up
+delete unneeded code
+try to get views into view folder
 
 
 
