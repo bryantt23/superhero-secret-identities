@@ -12,7 +12,7 @@ html
         li
           if user 
             p #{user._id}
-            p Posted by: #{userData.username}
+            p Posted by: #{userData.username} #{userData.id}
           else
             p Log in to see who posted
           //- p #{userData.secrets}
@@ -24,9 +24,8 @@ html
                   p Secret Identity: #{secret.secretIdentity}
                 else
                   p You must log in and become a member to know this secret identity
-                if user && user.isAdmin
-                  p #{secret}
-                  a(href=("/delete-secret/"+secret.id+"/"+user._id)) Delete Secret
+                if user && user.isAdmin && user.isMember
+                  a(href=("/delete-secret/"+secret.id+"/"+userData.id)) Delete Secret
 
   else
     p No data found

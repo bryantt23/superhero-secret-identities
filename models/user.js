@@ -18,10 +18,10 @@ var UserInstanceSchema = new Schema({
       superheroName: {
         type: String,
         required: true,
-        minlength: 3,
+        minlength: 1,
         maxlength: 100
       },
-      secretIdentity: { type: String, required: true }
+      secretIdentity: { type: String, minlength: 1, required: true }
     }
   ]
 });
