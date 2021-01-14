@@ -12,7 +12,18 @@ var UserInstanceSchema = new Schema({
   },
   password: { type: String, required: true },
   isAdmin: { type: Boolean, default: false },
-  isMember: { type: Boolean, default: false }
+  isMember: { type: Boolean, default: false },
+  secrets: [
+    {
+      superheroName: {
+        type: String,
+        required: true,
+        minlength: 3,
+        maxlength: 10
+      },
+      secretIdentity: { type: String, required: true }
+    }
+  ]
 });
 
 // Virtual for book's URL

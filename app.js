@@ -15,8 +15,8 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'mongo connection error'));
 
 const User = require('./models/user');
-const Secret = require('./models/secret');
-const Post = require('./models/post');
+// const Secret = require('./models/secret');
+// const Post = require('./models/post');
 
 //TODO use my model file
 // const User = mongoose.model(
@@ -80,12 +80,19 @@ app.use(function (req, res, next) {
 
 app.get('/', async (req, res) => {
   let posts;
-  await Post.find({}, function (err, result) {
-    if (err) throw err;
-    posts = result;
-    console.log('result: ' + result);
-    // db.close();
-  });
+  //https://stackoverflow.com/questions/23273123/list-all-values-of-a-certain-field-in-mongodb
+  //this allows just secrets to show
+  await User.distinct(
+    'secrets',
+    // await User.find(
+    // { secrets: { $elemMatch: { superheroName: 'Superman' } } },
+    function (err, result) {
+      if (err) throw err;
+      posts = result;
+      console.log('result: ' + JSON.stringify(result));
+      // db.close();
+    }
+  );
   console.log('posts:' + posts);
   // https://stackoverflow.com/questions/34796878/how-to-pass-data-between-routes-in-express
   // app.set('data', req.user);
