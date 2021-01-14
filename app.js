@@ -79,24 +79,16 @@ app.use(function (req, res, next) {
 });
 
 app.get('/', async (req, res) => {
-  let posts;
-  //https://stackoverflow.com/questions/23273123/list-all-values-of-a-certain-field-in-mongodb
-  //this allows just secrets to show
-  await User.distinct(
-    'secrets',
-    // await User.find(
-    // { secrets: { $elemMatch: { superheroName: 'Superman' } } },
-    function (err, result) {
-      if (err) throw err;
-      posts = result;
-      console.log('result: ' + JSON.stringify(result));
-      // db.close();
-    }
-  );
-  console.log('posts:' + posts);
+  let data;
+  await User.find({}, function (err, result) {
+    if (err) throw err;
+    data = result;
+    console.log('result: ' + JSON.stringify(result));
+    // db.close();
+  });
   // https://stackoverflow.com/questions/34796878/how-to-pass-data-between-routes-in-express
   // app.set('data', req.user);
-  res.render('index', { user: req.user, posts });
+  res.render('index', { user: req.user, data });
 });
 
 //TODO move views into view folder
