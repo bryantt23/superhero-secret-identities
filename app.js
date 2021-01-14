@@ -153,6 +153,26 @@ app.post('/sign-up', async (req, res, next) => {
     });
 });
 
+// GET request to add secret.
+app.get('/add-secret', (req, res, next) => {
+  res.render('add-secret', { user: req.user });
+});
+
+// POST request to update secret.
+app.post('/add-secret/:id', async (req, res, next) => {
+  var user_id = req.params.id;
+  var user_id = req.params.id;
+  console.log(user_id);
+
+  await User.findById(user_id, function (err, user) {
+    user.secrets.push(req.body);
+    user.save(function (err) {
+      if (err) console.log(err);
+    });
+  });
+  res.redirect('/');
+});
+
 app.post(
   '/log-in',
   passport.authenticate('local', {

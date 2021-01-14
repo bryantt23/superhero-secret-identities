@@ -5,32 +5,31 @@ html
   //- p #{data}
   //- p #{user}
 
-  ul
-    //- - book_list.sort(function(a, b) {let textA = a.title.toUpperCase(); let textB = b.title.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
-    each userData in data
-      li
-        //- p #{user.}
-        if user 
-          p Posted by: #{userData.username}
-        else
-          p Log in to see who posted
-        //- p #{userData.secrets}
-        ul
-          each secret in userData.secrets
-            li 
-              p Superhero: #{secret.superheroName}              
-              if user && user.isMember
-                p Secret Identity: #{secret.secretIdentity}
-              else
-                p You must log in and become a member to know this secret identity
-        //- p #{user.secret}
-        //- p #{user.secret}
-        //- a(href=post.url) #{post.title}
-        //- |  (#{post.author.name})
 
-    else
-      li There is no data.
-
+  if data 
+    ul
+      each userData in data
+        li
+          //- p #{user.}
+          if user 
+            p Posted by: #{userData.username}
+          else
+            p Log in to see who posted
+          //- p #{userData.secrets}
+          ul
+            each secret in userData.secrets
+              li 
+                p Superhero: #{secret.superheroName}              
+                if user && user.isMember
+                  p Secret Identity: #{secret.secretIdentity}
+                else
+                  p You must log in and become a member to know this secret identity
+  else
+    p No data found
+      //- p #{user.secret}
+      //- p #{user.secret}
+      //- a(href=post.url) #{post.title}
+      //- |  (#{post.author.name})
 
 if user
   h1 Welcome back #{user.username}
@@ -39,6 +38,8 @@ if user
   a(href='/change-is-member/'+user._id) Change IsMember
   br
   a(href='/change-is-admin/'+user._id) Change IsAdmin
+  br
+  a(href='/add-secret') Add a Superhero Secret
   br
   a(href='/log-out') LOG OUT
 else 
