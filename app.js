@@ -15,6 +15,8 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'mongo connection error'));
 
 const User = require('./models/user');
+const Secret = require('./models/secret');
+const Post = require('./models/post');
 
 //TODO use my model file
 // const User = mongoose.model(
@@ -76,10 +78,18 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+  let posts;
+  await Post.find({}, function (err, result) {
+    if (err) throw err;
+    posts = result;
+    console.log('result: ' + result);
+    // db.close();
+  });
+  console.log('posts:' + posts);
   // https://stackoverflow.com/questions/34796878/how-to-pass-data-between-routes-in-express
   // app.set('data', req.user);
-  res.render('index', { user: req.user });
+  res.render('index', { user: req.user, posts });
 });
 
 //TODO move views into view folder

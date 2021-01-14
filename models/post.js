@@ -15,7 +15,7 @@ var PostInstanceSchema = new Schema({
   }
 });
 
-// Virtual for book's URL
+// Virtual for post's URL
 PostInstanceSchema.virtual('url').get(function () {
   return '/post/' + this._id;
 });
