@@ -14,23 +14,6 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'mongo connection error'));
 
 const User = require('./models/user');
-// const Secret = require('./models/secret');
-// const Post = require('./models/post');
-
-//TODO use my model file
-// const User = mongoose.model(
-//   'User',
-//   new Schema({
-//     username: {
-//       type: String,
-//       required: true
-//     },
-//     password: { type: String, required: true },
-//     isAdmin: { type: Boolean, default: false },
-//     isMember: { type: Boolean, default: false }
-//   })
-// );
-
 const app = express();
 app.set('views', __dirname);
 app.set('view engine', 'pug');
@@ -162,7 +145,6 @@ app.get('/add-secret', (req, res, next) => {
 app.post('/add-secret/:id', async (req, res, next) => {
   var user_id = req.params.id;
   var user_id = req.params.id;
-  console.log(user_id);
   // https://stackoverflow.com/questions/5228210/how-to-remove-an-element-from-a-doubly-nested-array-in-a-mongodb-document
   await User.findById(user_id, function (err, user) {
     user.secrets.push(req.body);
@@ -187,14 +169,6 @@ app.get('/delete-secret/:id/:user_id', async (req, res, next) => {
       if (err) console.log(err);
     }
   );
-  console.log(`secret
-  
-  
-  
-  
-  
-  ${secret_id}`);
-
   res.redirect('/');
 });
 
